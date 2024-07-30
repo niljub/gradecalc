@@ -1,0 +1,27 @@
+.App {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.course {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.course input {
+  margin: 0 5px;
+  padding: 5px;
+}
+
+button {
+  margin: 10px 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 1.2em;
+}
