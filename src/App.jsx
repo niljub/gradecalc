@@ -8,12 +8,13 @@ import {
   Box,
   Grid,
   IconButton,
+  Paper
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function App() {
   const universityCourses = {
-    'Hochschule Darmstadt': [
+    'Hochschule Darmstadt Informatik SPO 2014': [
       { name: 'Einführung in die Wirtschaftsinformatik', grade: '', ects: '5' },
       { name: 'Grundlagen der diskreten Mathematik', grade: '', ects: '5' },
       { name: 'IT-Sicherheit', grade: '', ects: '5' },
@@ -60,7 +61,7 @@ function App() {
 
   const [courses, setCourses] = useState([]);
   const [average, setAverage] = useState(null);
-  const [selectedUniversity, setSelectedUniversity] = useState('Hochschule Darmstadt'); // Default selection
+  const [selectedUniversity, setSelectedUniversity] = useState('Hochschule Darmstadt Informatik SPO 2014'); // Default selection
 
   useEffect(() => {
     setCourses(universityCourses[selectedUniversity] || []);
