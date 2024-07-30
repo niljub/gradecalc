@@ -7,7 +7,9 @@ import {
   Typography,
   Box,
   Grid,
+  IconButton,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function App() {
   const universityCourses = {
@@ -74,6 +76,12 @@ function App() {
     setCourses([...courses, { name: '', grade: '', ects: '' }]);
   };
 
+  const handleRemoveCourse = (index) => {
+    const values = [...courses];
+    values.splice(index, 1);
+    setCourses(values);
+  };
+
   const handleCalculateAverage = () => {
     const totalEcts = courses.reduce((acc, course) => acc + parseFloat(course.ects || 0), 0);
     const weightedSum = courses.reduce((acc, course) => acc + (parseFloat(course.grade || 0) * parseFloat(course.ects || 0)), 0);
@@ -94,8 +102,9 @@ function App() {
     <Container className="App" sx={{ maxHeight:"95vh", display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ flexGrow: 0 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          College Grade Calculator
+          Grade Calculator
         </Typography>
+        <br />
         <Autocomplete
           sx={{ marginBottom: '25px' }}
           value={selectedUniversity}
@@ -106,8 +115,8 @@ function App() {
       </Box>
       <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
         {courses.map((course, index) => (
-          <Grid container spacing={2} key={index} sx={{marginBottom: '12px'}}>
-            <Grid item xs={12} sm={4}>
+          <Grid container spacing={2} key={index} sx={{ marginTop:'4px', alignItems: 'center' }}>
+            <Grid item xs>
               <TextField
                 fullWidth
                 label="Course Name"
@@ -117,7 +126,7 @@ function App() {
                 variant="outlined"
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item width={120}>
               <TextField
                 fullWidth
                 label="Grade"
@@ -131,7 +140,7 @@ function App() {
                 max="4"
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item width={120}>
               <TextField
                 fullWidth
                 label="ECTS"
@@ -143,6 +152,11 @@ function App() {
                 step="1"
                 min="0"
               />
+            </Grid>
+            <Grid item>
+              <IconButton onClick={() => handleRemoveCourse(index)} color="secondary">
+                <DeleteIcon />
+              </IconButton>
             </Grid>
           </Grid>
         ))}
