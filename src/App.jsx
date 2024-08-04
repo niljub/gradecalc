@@ -44,7 +44,7 @@ function App() {
       { name: 'Wissenschaftliches Arbeiten in der Informatik 2', grade: '', ects: '2.5' },
       { name: 'Praxismodul', grade: '', ects: '15' },
       { name: 'Bachelormodul', grade: '', ects: '15' },
-      { name: 'Technikfolgenabschätzung in der Produ', grade: '', ects: '2.5' },
+      { name: 'Technikfolgenabschätzung in der Produktentwicklung', grade: '', ects: '2.5' },
       { name: 'Penetration Testing', grade: '', ects: '5' },
       { name: 'Introduction to Artificial Intelligence', grade: '', ects: '5' },
       { name: 'Softwareentwicklung für HMI-Systeme', grade: '', ects: '5' },
@@ -80,7 +80,7 @@ function App() {
   const handleRemoveCourse = (index) => {
     const values = [...courses];
     values.splice(index, 1);
-    setCourses(values);
+    setCourses(values); 
   };
 
   const handleCalculateAverage = () => {
