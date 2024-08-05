@@ -162,19 +162,19 @@ function App() {
           </Grid>
         ))}
       </Box>
-      <Box sx={{ flexGrow: 0, mt: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
         <Button variant="contained" color="primary" onClick={handleAddCourse}>
           Add Course
         </Button>
         <Button variant="contained" color="secondary" onClick={handleCalculateAverage} sx={{ ml: 2 }}>
           Calculate Average
         </Button>
+        {average !== null && (
+          <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>
+  Weighted Grade: {average}
+</Typography>
+        )}
       </Box>
-      {average !== null && (
-        <Box className="result" sx={{ mt: 4 }}>
-          <Typography variant="h5">Weighted Average Grade: {average}</Typography>
-        </Box>
-      )}
     </Container>
   );
 }
