@@ -21,6 +21,7 @@ function App() {
         if (!universityNames.includes(defaultUniversity)) {
           universityNames.push(defaultUniversity);
         }
+        universityNames.push('New University')
         setUniversities(universityNames);
       })
       .catch(error => console.error('Error fetching universities:', error));
@@ -28,7 +29,8 @@ function App() {
 
   // Fetch courses when the selected university changes
   useEffect(() => {
-    if (selectedUniversity) {
+    
+    if (selectedUniversity && selectedUniversity != 'New University') {
       fetch(`http://localhost:3000/api/courses/${encodeURIComponent(selectedUniversity)}`)
         .then(response => response.json())
         .then(data => setCourses(data))
@@ -69,7 +71,7 @@ function App() {
   console.log(`http://localhost:3000/api/courses/${encodeURIComponent(selectedUniversity)}`);
 
   return (
-    <Container className="App" sx={{ maxHeight: "95vh", display: 'flex', flexDirection: 'column' }}>
+    <Container className="App" sx={{ maxHeight: "98vh", display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ flexGrow: 0 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Grade Calculator
@@ -86,7 +88,7 @@ function App() {
       <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
         {courses.map((course, index) => (
           <Grid container spacing={2} key={index} sx={{ marginTop: '4px', alignItems: 'center' }}>
-            <Grid item xs>
+            <Grid item xs={12} sm>
               <TextField
                 fullWidth
                 label="Course Name"
@@ -96,7 +98,7 @@ function App() {
                 variant="outlined"
               />
             </Grid>
-            <Grid item width={120}>
+            <Grid item xs={12} sm="auto" width={120}>
               <TextField
                 fullWidth
                 label="Grade"
@@ -110,7 +112,7 @@ function App() {
                 max="4"
               />
             </Grid>
-            <Grid item width={120}>
+            <Grid item xs={12} sm="auto" width={120}>
               <TextField
                 fullWidth
                 label="ECTS"
@@ -123,7 +125,7 @@ function App() {
                 min="0"
               />
             </Grid>
-            <Grid item>
+            <Grid item xs="auto">
               <IconButton onClick={() => handleRemoveCourse(index)} color="secondary">
                 <DeleteIcon />
               </IconButton>
