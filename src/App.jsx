@@ -145,6 +145,12 @@ function App() {
             Weighted Grade: {average}
           </Typography>
         )}
+
+        <TextField style={{marginLeft : 'auto'}} id="outlined-basic" label="Session" variant="outlined" size='small' />
+
+        <Button variant="contained" color="success" onClick={handleCalculateAverage} sx={{ ml: 2 }}>
+          Create Session
+        </Button>
       </Box>
     </Container>
   );
