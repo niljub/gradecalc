@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Container, TextField, Button, Autocomplete, Typography, Box, Grid, IconButton, Paper
+  Container, TextField, Button, Autocomplete, Typography, Box, Grid, IconButton
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -9,28 +9,24 @@ function App() {
   const [average, setAverage] = useState(null);
   const defaultUniversity = 'Hochschule Darmstadt Informatik SPO 2014';
   const [selectedUniversity, setSelectedUniversity] = useState(defaultUniversity);
-  const [universities, setUniversities] = useState([defaultUniversity]); // Including default university in the initial state
-  
-  // Fetch all universities on component mount
+  const [universities, setUniversities] = useState([defaultUniversity]);
+
   useEffect(() => {
     fetch('http://localhost:3000/api/universities')
       .then(response => response.json())
       .then(data => {
         const universityNames = data.map(u => u.name);
-        // Ensure the default university is included if not already part of the fetched data
         if (!universityNames.includes(defaultUniversity)) {
           universityNames.push(defaultUniversity);
         }
-        universityNames.push('New University')
+        universityNames.push('New University');
         setUniversities(universityNames);
       })
       .catch(error => console.error('Error fetching universities:', error));
   }, []);
 
-  // Fetch courses when the selected university changes
   useEffect(() => {
-    
-    if (selectedUniversity && selectedUniversity != 'New University') {
+    if (selectedUniversity && selectedUniversity !== 'New University') {
       fetch(`http://localhost:3000/api/courses/${encodeURIComponent(selectedUniversity)}`)
         .then(response => response.json())
         .then(data => setCourses(data))
@@ -67,8 +63,30 @@ function App() {
     setSelectedUniversity(value);
   };
 
-  console.log(universities);
-  console.log(`http://localhost:3000/api/courses/${encodeURIComponent(selectedUniversity)}`);
+  const generateRandomSessionId = () => {
+    return Math.random().toString(36).substring(2, 15);
+  };
+
+  const handleCreateSession = () => {
+    const sessionId = generateRandomSessionId();
+    const sessionData = {
+      sessionId,
+      courses
+    };
+
+    fetch('http://localhost:3000/api/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(sessionData)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Session created successfully:', data);
+      })
+      .catch(error => console.error('Error creating session:', error));
+  };
 
   return (
     <Container className="App" sx={{ maxHeight: "98vh", display: 'flex', flexDirection: 'column' }}>
@@ -145,10 +163,7 @@ function App() {
             Weighted Grade: {average}
           </Typography>
         )}
-
-        <TextField style={{marginLeft : 'auto'}} id="outlined-basic" label="Session" variant="outlined" size='small' />
-
-        <Button variant="contained" color="success" onClick={handleCalculateAverage} sx={{ ml: 2 }}>
+        <Button variant="contained" color="success" sx={{ ml: 2 }} onClick={handleCreateSession}>
           Create Session
         </Button>
       </Box>
