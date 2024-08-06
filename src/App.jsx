@@ -1,70 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Container,
-  TextField,
-  Button,
-  Autocomplete,
-  Typography,
-  Box,
-  Grid,
-  IconButton,
-  Paper
+  Container, TextField, Button, Autocomplete, Typography, Box, Grid, IconButton, Paper
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function App() {
-  const universityCourses = {
-    'Hochschule Darmstadt Informatik SPO 2014': [
-      { name: 'Einführung in die Wirtschaftsinformatik', grade: '', ects: '5' },
-      { name: 'Grundlagen der diskreten Mathematik', grade: '', ects: '5' },
-      { name: 'IT-Sicherheit', grade: '', ects: '5' },
-      { name: 'Programmieren / Algorithmen und Datenstrukturen 1', grade: '', ects: '7.5' },
-      { name: 'Technische Grundlagen der Informatik', grade: '', ects: '5' },
-      { name: 'IT-Recht und Datenschutz', grade: '', ects: '2.5' },
-      { name: 'Lineare Algebra und Wahrscheinlichkeitsrechnung', grade: '', ects: '5' },
-      { name: 'Netzwerke', grade: '', ects: '5' },
-      { name: 'Objektorientierte Analyse und Design', grade: '', ects: '5' },
-      { name: 'Programmieren / Algorithmen und Datenstrukturen 2', grade: '', ects: '7.5' },
-      { name: 'Rechnerarchitektur', grade: '', ects: '5' },
-      { name: 'Betriebssysteme', grade: '', ects: '5' },
-      { name: 'Datenbanken 1', grade: '', ects: '5' },
-      { name: 'Grundlagen der Analysis', grade: '', ects: '2.5' },
-      { name: 'Mikroprozessorsysteme', grade: '', ects: '5' },
-      { name: 'Nutzerzentrierte Softwareentwicklung', grade: '', ects: '5' },
-      { name: 'Software Engineering', grade: '', ects: '5' },
-      { name: 'Wissenschaftliches Arbeiten in der Informatik 1', grade: '', ects: '2.5' },
-      { name: 'Datenbanken 2', grade: '', ects: '2.5' },
-      { name: 'Entwicklung webbasierter Anwendungen', grade: '', ects: '5' },
-      { name: 'Graphische Datenverarbeitung', grade: '', ects: '5' },
-      { name: 'Informatik und Gesellschaft', grade: '', ects: '2.5' },
-      { name: 'Projektmanagement', grade: '', ects: '2.5' },
-      { name: 'Theoretische Informatik', grade: '', ects: '7.5' },
-      { name: 'Verteilte Systeme', grade: '', ects: '5' },
-      { name: 'Projekt Systementwicklung', grade: '', ects: '7.5' },
-      { name: 'Wissenschaftliches Arbeiten in der Informatik 2', grade: '', ects: '2.5' },
-      { name: 'Praxismodul', grade: '', ects: '15' },
-      { name: 'Bachelormodul', grade: '', ects: '15' },
-      { name: 'Technikfolgenabschätzung in der Produktentwicklung', grade: '', ects: '2.5' },
-      { name: 'Penetration Testing', grade: '', ects: '5' },
-      { name: 'Introduction to Artificial Intelligence', grade: '', ects: '5' },
-      { name: 'Softwareentwicklung für HMI-Systeme', grade: '', ects: '5' },
-      { name: 'Netzwerksicherheit', grade: '', ects: '5' },
-      { name: 'Unix for Software Developers', grade: '', ects: '5' },
-      { name: 'Data Warehouse Technologien', grade: '', ects: '5' },
-    ],
-    UniversityB: [
-      { name: 'Fundamentals of Algorithms', grade: '', ects: '3' },
-      // More courses specific to University B
-    ],
-    // Additional universities with their course lists
-  };
-
   const [courses, setCourses] = useState([]);
   const [average, setAverage] = useState(null);
-  const [selectedUniversity, setSelectedUniversity] = useState('Hochschule Darmstadt Informatik SPO 2014'); // Default selection
-
+  const defaultUniversity = 'Hochschule Darmstadt Informatik SPO 2014';
+  const [selectedUniversity, setSelectedUniversity] = useState(defaultUniversity);
+  const [universities, setUniversities] = useState([defaultUniversity]); // Including default university in the initial state
+  
+  // Fetch all universities on component mount
   useEffect(() => {
-    setCourses(universityCourses[selectedUniversity] || []);
+    fetch('http://localhost:3000/api/universities')
+      .then(response => response.json())
+      .then(data => {
+        const universityNames = data.map(u => u.name);
+        // Ensure the default university is included if not already part of the fetched data
+        if (!universityNames.includes(defaultUniversity)) {
+          universityNames.push(defaultUniversity);
+        }
+        setUniversities(universityNames);
+      })
+      .catch(error => console.error('Error fetching universities:', error));
+  }, []);
+
+  // Fetch courses when the selected university changes
+  useEffect(() => {
+    if (selectedUniversity) {
+      fetch(`http://localhost:3000/api/courses/${encodeURIComponent(selectedUniversity)}`)
+        .then(response => response.json())
+        .then(data => setCourses(data))
+        .catch(error => console.error('Error fetching courses:', error));
+    } else {
+      setCourses([]);
+    }
   }, [selectedUniversity]);
 
   const handleInputChange = (index, event) => {
@@ -80,7 +51,7 @@ function App() {
   const handleRemoveCourse = (index) => {
     const values = [...courses];
     values.splice(index, 1);
-    setCourses(values); 
+    setCourses(values);
   };
 
   const handleCalculateAverage = () => {
@@ -91,16 +62,14 @@ function App() {
   };
 
   const handleUniversityChange = (event, value) => {
-    if (value && universityCourses[value]) {
-      setSelectedUniversity(value);
-    } else {
-      setSelectedUniversity('');
-      setCourses([]);
-    }
+    setSelectedUniversity(value);
   };
 
+  console.log(universities);
+  console.log(`http://localhost:3000/api/courses/${encodeURIComponent(selectedUniversity)}`);
+
   return (
-    <Container className="App" sx={{ maxHeight:"95vh", display: 'flex', flexDirection: 'column' }}>
+    <Container className="App" sx={{ maxHeight: "95vh", display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ flexGrow: 0 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Grade Calculator
@@ -110,13 +79,13 @@ function App() {
           sx={{ marginBottom: '25px' }}
           value={selectedUniversity}
           onChange={handleUniversityChange}
-          options={Object.keys(universityCourses)}
+          options={universities}
           renderInput={(params) => <TextField {...params} label="Select University" variant="outlined" />}
         />
       </Box>
       <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
         {courses.map((course, index) => (
-          <Grid container spacing={2} key={index} sx={{ marginTop:'4px', alignItems: 'center' }}>
+          <Grid container spacing={2} key={index} sx={{ marginTop: '4px', alignItems: 'center' }}>
             <Grid item xs>
               <TextField
                 fullWidth
@@ -171,8 +140,8 @@ function App() {
         </Button>
         {average !== null && (
           <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>
-  Weighted Grade: {average}
-</Typography>
+            Weighted Grade: {average}
+          </Typography>
         )}
       </Box>
     </Container>
