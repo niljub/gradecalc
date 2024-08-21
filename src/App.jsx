@@ -36,6 +36,7 @@ function App() {
     }
   }, [selectedUniversity]);
 
+  
   const handleInputChange = (index, event) => {
     const values = [...courses];
     values[index][event.target.name] = event.target.value;
